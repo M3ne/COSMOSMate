@@ -257,6 +257,10 @@ export class Sun {
     // RAE to ECI
     this.eci = Ootk.Transforms.ecf2eci(CoordinateTransforms.rae2ecf(this.sunvar_.azimuth, this.sunvar_.elevation, this.sunvar_.range, <Radians>0, <Radians>0, <Kilometers>0), gmst);
 
+    // Follow the camera
+    const cameraPos = keepTrackApi.getMainCamera().getCameraPosition();
+    this.positionModifier_ = [cameraPos[0], cameraPos[1], cameraPos[2]];
+
     const sunMaxDist = Math.max(Math.max(Math.abs(this.eci.x), Math.abs(this.eci.y)), Math.abs(this.eci.z));
     this.drawPosition[0] = (this.eci.x / sunMaxDist) * this.SCALAR_DISTANCE + this.positionModifier_[0];
     this.drawPosition[1] = (this.eci.y / sunMaxDist) * this.SCALAR_DISTANCE + this.positionModifier_[1];

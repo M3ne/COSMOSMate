@@ -49,8 +49,9 @@ export class TimeMachine extends KeepTrackPlugin {
     this.historyOfSatellitesRunCount++;
     keepTrackApi.getOrbitManager().tempTransColor = settingsManager.colors.transparent;
     settingsManager.colors.transparent = [0, 0, 0, 0];
-    for (let yy = 0; yy <= 200; yy++) {
-      let year = 57 + yy;
+    let yy = 0;
+    for (yy = 0; yy <= 200; yy++) {
+      let year = 47 + yy;
       if (year >= 100) year = year - 100;
       setTimeout(
         (runCount) => {
@@ -61,8 +62,41 @@ export class TimeMachine extends KeepTrackPlugin {
       );
 
       const currentYear = parseInt(new Date().getUTCFullYear().toString().slice(2, 4));
-      if (year === currentYear) break;
+      if (year === currentYear + 1) break;
     }
+    setTimeout(
+      () => {
+        // Fade out text overlay
+        document.getElementById('textOverlay').style.transition = 'opacity 2s';
+        document.getElementById('textOverlay').style.opacity = '0';
+        settingsManager.autoRotateSpeed = 0.000025;
+      },
+      settingsManager.timeMachineDelay * (yy + 3)
+    );
+    setTimeout(
+      () => {
+        settingsManager.autoRotateSpeed = 0.00004;
+      },
+      settingsManager.timeMachineDelay * (yy + 6)
+    );
+    setTimeout(
+      () => {
+        settingsManager.autoRotateSpeed = 0.000055;
+      },
+      settingsManager.timeMachineDelay * (yy + 9)
+    );
+    setTimeout(
+      () => {
+        settingsManager.autoRotateSpeed = 0.000075;
+      },
+      settingsManager.timeMachineDelay * (yy + 12)
+    );
+    setTimeout(
+      () => {
+        settingsManager.isAutoZoomOut = true;
+      },
+      settingsManager.timeMachineDelay * (yy + 15)
+    );
   }
 
   playNextSatellite(runCount: number, year: number) {
@@ -81,7 +115,7 @@ export class TimeMachine extends KeepTrackPlugin {
     colorSchemeManagerInstance.setColorScheme(colorSchemeManagerInstance.group, true); // force color recalc
 
     if (!settingsManager.isDisableTimeMachineToasts) {
-      if (year >= 57 && year < 100) {
+      if (year >= 47 && year < 100) {
         const timeMachineString = <string>(settingsManager.timeMachineString(year.toString()) || `Time Machine In Year 19${year}!`);
         keepTrackApi.getUiManager().toast(timeMachineString, 'normal', settingsManager.timeMachineLongToast);
       } else {
